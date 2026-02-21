@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ірина Кучма — LR Leader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Montserrat:wght@400;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-deep: #8a6a1f;
+            --gold-pale: #f5e6b8;
+            --black: #080808;
+            --card: #141414;
+            --card2: #1a1710;
+        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--black); color: #fff; overflow-x: hidden; }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.35;
+        }
+        #particles-canvas { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+
+        /* HERO */
+        .hero { position: relative; width: 100%; max-width: 520px; margin: 0 auto; overflow: hidden; z-index: 1; }
+        .hero-bg-line {
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(201,168,76,0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 15%, rgba(201,168,76,0.2) 0%, transparent 55%);
+            z-index: 1;
+        }
+        .hero::after { content:''; position:absolute; top:0; left:6%; width:2px; height:55%; background: linear-gradient(to bottom, var(--gold), transparent); z-index:5; }
+        .hero-image { width:100%; display:block; mask-image: linear-gradient(to bottom, black 75%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%); position:relative; z-index:2; }
+
+        .hero-top-text { position:absolute; top:20px; left:10%; right:5%; z-index:10; }
+        .hero-top-text .script { font-family:'Great Vibes',cursive; font-size:clamp(32px,9vw,48px); color:var(--gold-light); line-height:1; text-shadow: 0 0 30px rgba(232,201,122,0.5); }
+        .hero-top-text .bold-line { font-weight:900; font-size:clamp(14px,4vw,22px); text-transform:uppercase; color:#fff; letter-spacing:2px; margin-top:4px; }
+        .hero-top-text .sub { font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-pale); font-size:clamp(13px,3.5vw,18px); margin-top:2px; }
+
+        .name-plate { position:absolute; bottom:22%; left:8%; z-index:12; border-left:3px solid var(--gold); padding-left:14px; }
+        .name-plate h2 { font-weight:900; font-size:clamp(14px,4vw,20px); text-transform:uppercase; color:#fff; letter-spacing:1px; }
+        .name-plate .role { font-size:clamp(9px,2.5vw,12px); color:#000; text-transform:uppercase; font-weight:900; letter-spacing:1px; margin-top:3px; }
+
+        /* CONTAINER */
+        .container { position:relative; z-index:1; width:92%; max-width:520px; margin:0 auto; padding-bottom:60px; }
+
+        /* ABOUT */
+        .about-block { position:relative; background: var(--card2); border:1px solid rgba(201,168,76,0.4); border-radius:16px; padding:28px 24px; margin-bottom:24px; overflow:hidden; }
+        .about-block p { font-size:14px; line-height:1.75; color:#ccc; }
+        .section-title { font-family:'Great Vibes',cursive; color:var(--gold-light); font-size:clamp(38px,10vw,50px); line-height:1; margin-bottom:14px; text-shadow:0 0 20px rgba(232,201,122,0.35); }
+
+        /* DIVIDER */
+        .divider { display:flex; align-items:center; gap:12px; margin:16px 0; }
+        .divider-line { flex:1; height:1px; background: linear-gradient(to right, transparent, rgba(201,168,76,0.5), transparent); }
+        .divider-diamond { color:var(--gold); font-size:10px; letter-spacing:6px; }
+
+        /* CARDS */
+        .card { background:var(--card); border:1px solid rgba(201,168,76,0.2); border-radius:16px; padding:24px 22px; margin-bottom:24px; position:relative; overflow:hidden; transition:border-color 0.3s; }
+        .card:hover { border-color:rgba(201,168,76,0.55); }
+        .card::after { content:''; position:absolute; bottom:0; left:0; width:40%; height:2px; background: linear-gradient(to right, var(--gold), transparent); }
+        .card p { font-size:14px; line-height:1.75; color:#b0b0b0; }
+
+        /* RESULTS */
+        .results-block { background:var(--card2); border:1px solid rgba(201,168,76,0.35); border-radius:16px; padding:28px 22px; margin-bottom:24px; position:relative; }
+        .results-label { font-weight:900; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-light); text-align:center; margin-bottom:20px; }
+        .tags-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+        .tag { background:rgba(255,255,255,0.03); border:1px solid rgba(201,168,76,0.35); border-radius:50px; padding:10px 18px; font-size:13px; color:#d0d0d0; font-weight:500; transition:all 0.3s; }
+
+        /* CTA */
+        .btn-cta { display:block; width:100%; max-width:320px; margin:36px auto 16px; padding:20px; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-radius:50px; text-align:center; color:#000; font-weight:900; font-size:13px; text-transform:uppercase; letter-spacing:3px; text-decoration:none; box-shadow:0 8px 30px rgba(201,168,76,0.45); transition:all 0.3s; }
+
+        /* SOCIAL */
+        .social-footer { display:flex; justify-content:center; gap:24px; margin-top:40px; padding-bottom:40px; }
+        .social-icon { width:52px; height:52px; border-radius:50%; border:1px solid rgba(201,168,76,0.45); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:all 0.3s; }
+        .social-icon svg { width:22px; height:22px; fill:var(--gold-light); }
+
+        .fade-in { opacity:0; transform:translateY(24px); transition:opacity 0.7s ease,transform 0.7s ease; }
+        .fade-in.visible { opacity:1; transform:translateY(0); }
+    </style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<div class="hero">
+    <div class="hero-bg-line"></div>
+    <div class="hero-top-text">
+        <div class="script">Побудуй</div>
+        <div class="bold-line">Міжнародний бізнес</div>
+        <div class="sub">у сфері краси та здоров'я</div>
+    </div>
+    <img src="me.jpg" class="hero-image" alt="Ірина Кучма">
+    <div class="name-plate">
+        <h2>Ірина Кучма</h2>
+        <p class="role">Лідер компанії LR · 30+ країн</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="about-block fade-in">
+        <div class="section-title">Про мене</div>
+        <p class="about-text">
+            <strong>Ірина Кучма</strong> лідер Німецької компанії LR.<br><br>Розвиваю офіційний онлайн бізнес у <strong>30+ країнах</strong> світу.<br><br>Будую сильну команду та допомагаю жінкам та чоловікам виходити на новий рівень доходів та мислення.
+        </p>
+    </div>
+
+    <div class="divider fade-in"><div class="divider-line"></div><div class="divider-diamond">◆ ◆ ◆</div><div class="divider-line"></div></div>
+
+    <div class="card fade-in">
+        <div class="section-title">Партнерство</div>
+        <p>Покрокове навчання, підтримка 24/7, готові інструменти для роботи, стратегія росту все, щоб ви досягли максимальних результатів у своєму бізнесі.</p>
+    </div>
+
+    <div class="divider fade-in"><div class="divider-line"></div><div class="divider-diamond">◆ ◆ ◆</div><div class="divider-line"></div></div>
+
+    <div class="card fade-in">
+        <div class="section-title">Наставництво</div>
+        <p>Супроводжую до результату, надихаю і підтримую на кожному кроці</p>
+    </div>
+
+    <div class="divider fade-in"><div class="divider-line"></div><div class="divider-diamond">◆ ◆ ◆</div><div class="divider-line"></div></div>
+
+    <div class="card fade-in">
+        <div class="section-title">Команда</div>
+        <p>Це не просто бізнес. Це оточення однодумців, які надихають, підтримують і ростуть разом. Тут кожен відчуває себе цінним і потрібним.</p>
+    </div>
+
+    <div class="divider fade-in"><div class="divider-line"></div><div class="divider-diamond">◆ ◆ ◆</div><div class="divider-line"></div></div>
+
+    <div class="card fade-in">
+        <div class="section-title">Експертність</div>
+        <p>Підбір продуктів під конкретні потреби, реальні результати та високий рівень задоволеності клієнтів.</p>
+    </div>
+
+    <div class="divider fade-in"><div class="divider-line"></div><div class="divider-diamond">◆ ◆ ◆</div><div class="divider-line"></div></div>
+
+    <div class="card fade-in">
+        <div class="section-title">Співпраця</div>
+        <p>Професійна побудова бізнесу, успішна стратегія розвитку та підтримка.</p>
+    </div>
+
+    <div class="results-block fade-in">
+        <div class="results-label">Результат</div>
+        <div class="tags-grid">
+            <div class="tag">Стабільний дохід</div>
+            <div class="tag">Команда</div>
+            <div class="tag">Сильний особистий бренд</div>
+            <div class="tag">Впевненість у завтрашньому дні</div>
+            <div class="tag">Внутрішня сила</div>
+            <div class="tag">Фінансова незалежність</div>
+        </div>
+    </div>
+
+    <a href="second_iryna.html" class="btn-cta fade-in">Далі →</a>
+
+    <div class="social-footer fade-in">
+        <a href="https://www.instagram.com/YOUR_IG/" class="social-icon" id="ig-link" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://t.me/YOUR_TG" class="social-icon" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.35-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.88.03-.24.36-.49 1-.74 3.91-1.7 6.52-2.82 7.83-3.37 3.71-1.55 4.48-1.82 4.99-1.83.11 0 .36.03.52.16.14.11.18.26.19.38 0 .04.01.12 0 .19z"/></svg>
+        </a>
+    </div>
+</div>
+
+<script>
+(function(){
+    var canvas=document.getElementById('particles-canvas'),ctx=canvas.getContext('2d'),p=[];
+    function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+    resize();window.addEventListener('resize',resize);
+    function rand(a,b){return Math.random()*(b-a)+a;}
+    for(var i=0;i<55;i++){p.push({x:rand(0,window.innerWidth),y:rand(0,window.innerHeight),r:rand(0.4,1.4),vx:rand(-0.1,0.1),vy:rand(-0.16,-0.04),alpha:rand(0.03,0.13),hue:Math.random()>0.5?'201,168,76':'255,255,255'});}
+    function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);p.forEach(function(pt){ctx.beginPath();ctx.arc(pt.x,pt.y,pt.r,0,Math.PI*2);ctx.fillStyle='rgba('+pt.hue+','+pt.alpha+')';ctx.fill();pt.x+=pt.vx;pt.y+=pt.vy;if(pt.y<-5)pt.y=canvas.height+5;if(pt.x<-5)pt.x=canvas.width+5;if(pt.x>canvas.width+5)pt.x=-5;});requestAnimationFrame(draw);}
+    draw();
+})();
+
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>
